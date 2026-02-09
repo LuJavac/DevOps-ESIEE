@@ -2,13 +2,13 @@
 Projet/
 ├── backend/
 │   ├── src/
-│   │   ├── routes/
-│   │   │   └── equipements.js         # Routes CRUD
 │   │   ├── controllers/
 │   │   │   └── equipements.js         # Logique métier CRUD
 │   │   ├── db/
 │   │   │   ├── index.js               # Connexion PostgreSQL
 │   │   │   └── init.sql               # Script d'initialisation DB
+│   │   ├── routes/
+│   │   │   └── equipements.js         # Routes CRUD
 │   │   └── app.js                     # Point d'entrée Express
 │   ├── tests/
 │   │   └── api.test.js                # Tests Jest
@@ -17,8 +17,8 @@ Projet/
 │   ├── Dockerfile                     # Image Docker du backend
 │   ├── package.json                   # Dépendances Node.js
 ├── kubernetes/
-│   ├── postgres.yaml                  # Déploiement PostgreSQL
-│   └── deployment.yaml                # Déploiement Backend
+│   ├── deployment.yaml                # Déploiement Backend
+│   └── postgres.yaml                  # Déploiement PostgreSQL
 ├── .gitignore                         # Fichiers à ignorer par Git
 ├── Makefile                           # Commandes simplifiées
 └── README.md                          # Documentation principale
