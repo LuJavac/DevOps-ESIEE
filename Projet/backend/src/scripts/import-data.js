@@ -221,11 +221,12 @@ async function main() {
     const equipements = await fetchEquipements();
     
     // 3. Limiter à 1000 pour les tests
-    //const sample = equipements.slice(0, 1000);
+    const sample = equipements.slice(0, 1000);
     
     // 4. Insérer en base
-    await insertEquipements(equipements);//sample);
-    
+    //await insertEquipements(equipements);//sample);
+    await insertEquipements(sample);
+
     // 5. Stats finales
     const result = await pool.query('SELECT COUNT(*) as total FROM equipements');
     console.log(`\n📊 Total en base : ${result.rows[0].total} équipements`);
