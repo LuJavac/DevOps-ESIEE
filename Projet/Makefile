@@ -24,8 +24,11 @@ db-stop: ## Arrêter PostgreSQL
 	docker stop equipements-db
 	docker rm equipements-db
 
-db-init: ## Initialiser la base de données
+db-init: ## Initialiser la base de données (données exemple)
 	docker exec -i equipements-db psql -U postgres -d equipements < backend/src/db/init.sql
+
+db-import: ## Importer les données réelles de data.gouv.fr
+	cd backend && node src/scripts/import-data.js
 
 docker-build: ## Build de l'image Docker
 	cd backend && docker build -t equipements-api:latest .
@@ -51,6 +54,9 @@ k8s-status: ## Vérifier le statut Kubernetes
 
 k8s-logs: ## Voir les logs du backend
 	kubectl logs -l app=backend --tail=50 -f
+
+db-stats: ## Afficher les statistiques de la base
+	docker exec equipements-db psql -U postgres -d equipements -c "SELECT COUNT(*) as total FROM equipements;"
 
 clean: ## Nettoyer les fichiers temporaires
 	cd backend && rm -rf node_modules coverage
