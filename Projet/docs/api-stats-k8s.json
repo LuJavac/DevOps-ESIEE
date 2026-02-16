@@ -1,0 +1,92 @@
+{
+  "success": true,
+  "stats": {
+    "total": 1001,
+    "communes": 349,
+    "accessible": 262,
+    "byType": [
+      {
+        "equip_type_famille": "Court de tennis",
+        "count": "124"
+      },
+      {
+        "equip_type_famille": "Equipement d'activités de forme et de santé",
+        "count": "109"
+      },
+      {
+        "equip_type_famille": "Salle ou terrain spécialisé",
+        "count": "97"
+      },
+      {
+        "equip_type_famille": "Terrain de grands jeux",
+        "count": "92"
+      },
+      {
+        "equip_type_famille": "Equipement équestre",
+        "count": "86"
+      },
+      {
+        "equip_type_famille": "Multisports/City-stades",
+        "count": "86"
+      },
+      {
+        "equip_type_famille": "Salle multisports",
+        "count": "68"
+      },
+      {
+        "equip_type_famille": "Salle non spécialisée",
+        "count": "59"
+      },
+      {
+        "equip_type_famille": "Terrain extérieur de petits jeux collectifs",
+        "count": "52"
+      },
+      {
+        "equip_type_famille": "Boulodrome",
+        "count": "39"
+      }
+    ],
+    "byCommune": [
+      {
+        "commune_nom": "Paris 14e Arrondissement",
+        "count": "29"
+      },
+      {
+        "commune_nom": "Paris 12e Arrondissement",
+        "count": "29"
+      },
+      {
+        "commune_nom": "Paris 16e Arrondissement",
+        "count": "27"
+      },
+      {
+        "commune_nom": "Paris 13e Arrondissement",
+        "count": "26"
+      },
+      {
+        "commune_nom": "Paris 15e Arrondissement",
+        "count": "21"
+      },
+      {
+        "commune_nom": "Paris 11e Arrondissement",
+        "count": "20"
+      },
+      {
+        "commune_nom": "Mantes-la-Jolie",
+        "count": "20"
+      },
+      {
+        "commune_nom": "Paris 17e Arrondissement",
+        "count": "15"
+      },
+      {
+        "commune_nom": "Guyancourt",
+        "count": "14"
+      },
+      {
+        "commune_nom": "Paris 9e Arrondissement",
+        "count": "14"
+      }
+    ]
+  }
+}

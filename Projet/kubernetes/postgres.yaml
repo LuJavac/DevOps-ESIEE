@@ -27,7 +27,7 @@ spec:
         - name: POSTGRES_USER
           value: "postgres"
         - name: POSTGRES_PASSWORD
-          value: "devops2024"
+          value: "devops2026"
         volumeMounts:
         - name: postgres-storage
           mountPath: /var/lib/postgresql/data

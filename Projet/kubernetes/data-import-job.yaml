@@ -1,0 +1,45 @@
+---
+# Job pour importer les données au premier déploiement
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-import-job
+  labels:
+    app: data-import
+spec:
+  ttlSecondsAfterFinished: 3600  # Supprime le job 1h après succès
+  template:
+    metadata:
+      labels:
+        app: data-import
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-import
+        image: equipements-api:latest
+        imagePullPolicy: Never
+        command: ["node", "src/scripts/import-data.js"]
+        env:
+        - name: DB_HOST
+          value: "postgres-service"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: "equipements"
+        - name: DB_USER
+          value: "postgres"
+        - name: DB_PASSWORD
+          value: "devops2026"
+      # Attendre que PostgreSQL soit prêt
+      initContainers:
+      - name: wait-for-postgres
+        image: busybox:1.35
+        command: 
+        - sh
+        - -c
+        - |
+          until nc -z postgres-service 5432; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+          echo "PostgreSQL is ready!"

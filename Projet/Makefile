@@ -15,7 +15,7 @@ test: ## Lancer les tests
 db-start: ## Démarrer PostgreSQL (Docker)
 	docker run -d \
 		--name equipements-db \
-		-e POSTGRES_PASSWORD=devops2024 \
+		-e POSTGRES_PASSWORD=devops2026 \
 		-e POSTGRES_DB=equipements \
 		-p 5432:5432 \
 		postgres:15-alpine
@@ -45,15 +45,27 @@ k8s-deploy: ## Déployer sur Kubernetes
 	kubectl apply -f kubernetes/postgres.yaml
 	kubectl apply -f kubernetes/deployment.yaml
 
+k8s-import: ## Importer les données dans K8s
+	kubectl apply -f kubernetes/data-import-job.yaml
+
 k8s-delete: ## Supprimer le déploiement Kubernetes
 	kubectl delete -f kubernetes/
 
 k8s-status: ## Vérifier le statut Kubernetes
+	@echo "=== Pods ==="
 	kubectl get pods
+	@echo ""
+	@echo "=== Services ==="
 	kubectl get services
 
 k8s-logs: ## Voir les logs du backend
 	kubectl logs -l app=backend --tail=50 -f
+
+k8s-validate: ## Valider le déploiement K8s
+	./validate-k8s.sh
+
+k8s-url: ## Obtenir l'URL de l'API
+	@minikube service backend-service --url
 
 db-stats: ## Afficher les statistiques de la base
 	docker exec equipements-db psql -U postgres -d equipements -c "SELECT COUNT(*) as total FROM equipements;"

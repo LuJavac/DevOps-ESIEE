@@ -38,3 +38,7 @@ build/
 
 # Docker
 .dockerignore
+
+# Kubernetes local tools
+minikube*
+kubectl*

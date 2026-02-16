@@ -1,0 +1,6 @@
+🧪 Test de l'API Kubernetes
+==============================
+Port: 8081
+
+⚠️  Port 8081 déjà occupé. Choisir un autre port:
+   ./test-k8s-api-alt.sh 8081
