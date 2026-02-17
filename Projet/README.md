@@ -4,6 +4,10 @@ Repository for the Labs and project of the DevOps subject (E4_2025-2026 Scholar 
 # Structure
 
 Projet/
+├── .github/
+│   └── workflows/
+│       ├── build.yml
+│       └── test.yml
 ├── backend/
 │   ├── src/
 │   │   ├── controllers/
