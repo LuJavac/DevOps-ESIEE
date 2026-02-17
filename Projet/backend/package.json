@@ -2,13 +2,11 @@
   "name": "equipements-sportifs-api",
   "version": "1.0.0",
   "description": "API CRUD pour la gestion des équipements sportifs",
-  "main": "src/app.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch",
-    "lint": "eslint src/"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --coverage"
   },
   "keywords": [
     "devops",

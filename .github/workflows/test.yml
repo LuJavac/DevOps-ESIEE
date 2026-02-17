@@ -37,6 +37,46 @@ jobs:
       working-directory: ./Projet/backend
       run: npm install
 
+    - name: Create database schema
+      env:
+        PGPASSWORD: test_password
+      run: |
+        psql -h localhost -U postgres -d equipements_test << 'SQL'
+        CREATE TABLE IF NOT EXISTS equipements (
+          id SERIAL PRIMARY KEY,
+          equip_numero VARCHAR(50) UNIQUE NOT NULL,
+          inst_numero VARCHAR(50),
+          inst_nom VARCHAR(255),
+          inst_adresse TEXT,
+          inst_cp VARCHAR(10),
+          commune_nom VARCHAR(100),
+          commune_code VARCHAR(10),
+          dep_code VARCHAR(5),
+          dep_nom VARCHAR(100),
+          reg_nom VARCHAR(100),
+          equip_nom VARCHAR(255),
+          equip_type_name VARCHAR(255),
+          equip_type_famille VARCHAR(255),
+          equip_nature VARCHAR(50),
+          latitude DECIMAL(10, 8),
+          longitude DECIMAL(11, 8),
+          equip_surf DECIMAL(10, 2),
+          equip_long DECIMAL(10, 2),
+          equip_larg DECIMAL(10, 2),
+          equip_haut DECIMAL(10, 2),
+          inst_acc_handi_bool BOOLEAN,
+          equip_pmr_acc BOOLEAN,
+          equip_ouv_public_bool BOOLEAN,
+          aps_name JSONB,
+          equip_gest_type VARCHAR(100),
+          equip_prop_type VARCHAR(100),
+          equip_service_date VARCHAR(10),
+          inst_date_creation DATE,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        );
+        SQL
+
     - name: Run tests
       working-directory: ./Projet/backend
       env:
