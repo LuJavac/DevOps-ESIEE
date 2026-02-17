@@ -3,7 +3,7 @@ const app = require('../src/app');
 const db = require('../src/db');
 
 describe('API Tests', () => {
-  
+
   // Health check
   describe('GET /health', () => {
     it('should return status OK', async () => {
@@ -70,16 +70,33 @@ describe('API Tests', () => {
     });
 
     it('should combine multiple filters', async () => {
-      const res = await request(app)
-        .get('/equipements?commune=Paris&accessible=true&limit=5');
+      const res = await request(app).get('/equipements?commune=Paris&accessible=true&limit=5');
       expect(res.statusCode).toBe(200);
       expect(res.body.filters.commune).toBe('Paris');
       expect(res.body.filters.accessible).toBe('true');
     });
   });
 
-  // Statistiques
+  // Statistiques — insère ses propres données pour être indépendant
   describe('GET /equipements/stats', () => {
+
+    beforeAll(async () => {
+      await request(app).post('/equipements').send({
+        equip_numero: 'STATS_TEST_001',
+        equip_nom: 'Stade Stats Test',
+        commune_nom: 'Paris'
+      });
+      await request(app).post('/equipements').send({
+        equip_numero: 'STATS_TEST_002',
+        equip_nom: 'Piscine Stats Test',
+        commune_nom: 'Lyon'
+      });
+    });
+
+    afterAll(async () => {
+      await db.query("DELETE FROM equipements WHERE equip_numero LIKE 'STATS_TEST_%'");
+    });
+
     it('should return statistics', async () => {
       const res = await request(app).get('/equipements/stats');
       expect(res.statusCode).toBe(200);
@@ -104,10 +121,9 @@ describe('API Tests', () => {
   // GET par ID
   describe('GET /equipements/:id', () => {
     it('should return a single equipement', async () => {
-      // D'abord récupérer un ID valide
       const listRes = await request(app).get('/equipements?limit=1');
       const validId = listRes.body.data[0]?.id;
-      
+
       if (validId) {
         const res = await request(app).get(`/equipements/${validId}`);
         expect(res.statusCode).toBe(200);
@@ -123,26 +139,21 @@ describe('API Tests', () => {
     });
   });
 
-  // POST - Création
+  // POST
   describe('POST /equipements', () => {
-    const testEquipement = {
-      equip_numero: `TEST_${Date.now()}`,
-      equip_nom: 'Stade de Test',
-      equip_type_name: 'Terrain de football',
-      commune_nom: 'Paris',
-      latitude: 48.8566,
-      longitude: 2.3522
-    };
-
     it('should create a new equipement', async () => {
       const res = await request(app)
         .post('/equipements')
-        .send(testEquipement);
-      
+        .send({
+          equip_numero: `TEST_CREATE_${Date.now()}`,
+          equip_nom: 'Stade de Test',
+          commune_nom: 'Paris'
+        });
+
       expect(res.statusCode).toBe(201);
       expect(res.body).toHaveProperty('success', true);
       expect(res.body.data).toHaveProperty('equip_nom', 'Stade de Test');
-      
+
       // Cleanup
       if (res.body.data?.id) {
         await request(app).delete(`/equipements/${res.body.data.id}`);
@@ -150,48 +161,44 @@ describe('API Tests', () => {
     });
 
     it('should reject equipement without required fields', async () => {
-      const invalid = { equip_nom: 'Test' }; // Manque equip_numero
-      
       const res = await request(app)
         .post('/equipements')
-        .send(invalid);
-      
+        .send({ equip_nom: 'Sans numéro' }); // manque equip_numero
+
       expect(res.statusCode).toBe(400);
       expect(res.body).toHaveProperty('success', false);
     });
 
     it('should reject duplicate equip_numero', async () => {
-      // Créer un équipement
-      const firstRes = await request(app)
-        .post('/equipements')
-        .send(testEquipement);
-      
-      // Tenter de créer avec le même numero
-      const secondRes = await request(app)
-        .post('/equipements')
-        .send(testEquipement);
-      
-      expect(secondRes.statusCode).toBe(409);
-      
+      const payload = {
+        equip_numero: `TEST_DUP_${Date.now()}`,
+        equip_nom: 'Test Doublon',
+        commune_nom: 'Paris'
+      };
+
+      const first = await request(app).post('/equipements').send(payload);
+      expect(first.statusCode).toBe(201);
+
+      const second = await request(app).post('/equipements').send(payload);
+      expect(second.statusCode).toBe(409);
+
       // Cleanup
-      if (firstRes.body.data?.id) {
-        await request(app).delete(`/equipements/${firstRes.body.data.id}`);
+      if (first.body.data?.id) {
+        await request(app).delete(`/equipements/${first.body.data.id}`);
       }
     });
   });
 
-  // PUT - Modification
+  // PUT
   describe('PUT /equipements/:id', () => {
     let createdId;
 
     beforeAll(async () => {
-      const res = await request(app)
-        .post('/equipements')
-        .send({
-          equip_numero: `TEST_UPDATE_${Date.now()}`,
-          equip_nom: 'Original',
-          commune_nom: 'Paris'
-        });
+      const res = await request(app).post('/equipements').send({
+        equip_numero: `TEST_UPDATE_${Date.now()}`,
+        equip_nom: 'Original',
+        commune_nom: 'Paris'
+      });
       createdId = res.body.data?.id;
     });
 
@@ -205,7 +212,7 @@ describe('API Tests', () => {
       const res = await request(app)
         .put(`/equipements/${createdId}`)
         .send({ equip_nom: 'Modifié' });
-      
+
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty('success', true);
       expect(res.body.data.equip_nom).toBe('Modifié');
@@ -215,7 +222,7 @@ describe('API Tests', () => {
       const res = await request(app)
         .put('/equipements/999999')
         .send({ equip_nom: 'Test' });
-      
+
       expect(res.statusCode).toBe(404);
     });
   });
@@ -223,23 +230,18 @@ describe('API Tests', () => {
   // DELETE
   describe('DELETE /equipements/:id', () => {
     it('should delete an equipement', async () => {
-      // Créer un équipement à supprimer
-      const createRes = await request(app)
-        .post('/equipements')
-        .send({
-          equip_numero: `TEST_DELETE_${Date.now()}`,
-          equip_nom: 'A Supprimer',
-          commune_nom: 'Paris'
-        });
-      
+      const createRes = await request(app).post('/equipements').send({
+        equip_numero: `TEST_DELETE_${Date.now()}`,
+        equip_nom: 'A Supprimer',
+        commune_nom: 'Paris'
+      });
+
       const id = createRes.body.data?.id;
-      
-      // Supprimer
+
       const deleteRes = await request(app).delete(`/equipements/${id}`);
       expect(deleteRes.statusCode).toBe(200);
       expect(deleteRes.body).toHaveProperty('success', true);
-      
-      // Vérifier que c'est bien supprimé
+
       const getRes = await request(app).get(`/equipements/${id}`);
       expect(getRes.statusCode).toBe(404);
     });
@@ -250,7 +252,7 @@ describe('API Tests', () => {
     });
   });
 
-  // 404 Handling
+  // 404
   describe('404 Handling', () => {
     it('should return 404 for unknown routes', async () => {
       const res = await request(app).get('/unknown-route');
@@ -259,9 +261,8 @@ describe('API Tests', () => {
     });
   });
 
-  // Cleanup après tous les tests
+  // Fermer la connexion DB
   afterAll(async () => {
-    // Fermer la connexion DB
     await db.pool.end();
   });
 });
