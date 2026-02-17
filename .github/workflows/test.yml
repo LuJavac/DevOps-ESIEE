@@ -34,11 +34,11 @@ jobs:
         node-version: '18'
 
     - name: Install dependencies
-      working-directory: ./backend
+      working-directory: ./Projet/backend
       run: npm install
 
     - name: Run tests
-      working-directory: ./backend
+      working-directory: ./Projet/backend
       env:
         DB_HOST: localhost
         DB_PORT: 5432

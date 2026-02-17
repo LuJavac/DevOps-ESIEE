@@ -24,7 +24,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v5
       with:
-        context: ./backend
+        context: ./Projet/backend
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/equipements-api:latest
         cache-from: type=gha
