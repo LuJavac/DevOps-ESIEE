@@ -1,0 +1,23 @@
+- name: Ensure sample app backends are present
+  ansible.builtin.assert:
+    that:
+      - groups['sample_app_instances'] is defined
+      - groups['sample_app_instances'] | length > 0
+    fail_msg: "No sample_app_instances hosts found in dynamic inventory."
+
+- name: Install Nginx
+  ansible.builtin.yum:
+    name: nginx
+    state: present
+
+- name: Copy Nginx config
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify: restart nginx
+
+- name: Ensure Nginx is started and enabled
+  ansible.builtin.systemd_service:
+    state: started
+    enabled: true
+    name: nginx

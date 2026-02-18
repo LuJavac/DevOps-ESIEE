@@ -1,0 +1,19 @@
+- name: Copy sample app files
+  ansible.builtin.copy:
+    src: ./
+    dest: /home/app-user/
+    owner: app-user
+    group: app-user
+
+- name: Start sample app using pm2
+  ansible.builtin.shell: |
+    pm2 delete sample-app || true
+    pm2 start app.config.js --update-env
+  args:
+    executable: /bin/bash
+    chdir: /home/app-user/
+  become_user: app-user
+
+- name: Save pm2 app list so it survives reboot
+  ansible.builtin.command: pm2 save
+  become_user: app-user

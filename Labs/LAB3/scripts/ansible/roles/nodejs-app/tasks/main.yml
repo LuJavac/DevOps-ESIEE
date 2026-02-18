@@ -1,0 +1,36 @@
+- name: Remove legacy NodeSource NSolid repo if present
+  ansible.builtin.file:
+    path: /etc/yum.repos.d/nodesource-nsolid.repo
+    state: absent
+
+- name: Add NodeSource repo (Node.js 21)
+  ansible.builtin.shell: curl -fsSL https://rpm.nodesource.com/setup_21.x | bash -
+  args:
+    executable: /bin/bash
+    creates: /etc/yum.repos.d/nodesource-nodejs.repo
+
+- name: Install Node.js
+  ansible.builtin.yum:
+    name: nodejs
+    state: present
+
+- name: Create app user
+  ansible.builtin.user:
+    name: app-user
+    create_home: true
+    shell: /bin/bash
+    state: present
+
+- name: Install pm2
+  community.general.npm:
+    name: pm2
+    global: true
+    state: present
+
+- name: Configure pm2 to run at startup as the app user
+  ansible.builtin.shell: |
+    env PATH=$PATH:/usr/bin pm2 startup systemd -u app-user --hp /home/app-user
+    systemctl enable pm2-app-user
+  args:
+    executable: /bin/bash
+    creates: /etc/systemd/system/pm2-app-user.service

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment                  
+metadata:                         
+  name: sample-app-deployment
+spec:
+
+  replicas: 3                     
+  template:                       
+    metadata:                     
+      labels:
+        app: sample-app-pods
+    spec:
+      containers:                 
+        - name: sample-app        
+          image: 681479472828.dkr.ecr.us-east-2.amazonaws.com/sample-app:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080 
+          env:                    
+            - name: NODE_ENV
+              value: production
+  selector:                       
+    matchLabels:
+      app: sample-app-pods
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
