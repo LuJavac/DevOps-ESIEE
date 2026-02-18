@@ -1,7 +1,0 @@
-HTTP/2 200 
-date: Wed, 18 Feb 2026 05:04:25 GMT
-content-type: text/plain; charset=utf-8
-content-length: 13
-apigw-requestid: Y9g9_jOhCYcEPew=
-
-Hello, World!

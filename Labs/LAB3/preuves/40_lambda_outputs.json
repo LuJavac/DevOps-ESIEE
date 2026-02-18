@@ -1,7 +1,0 @@
-{
-  "api_endpoint": {
-    "sensitive": false,
-    "type": "string",
-    "value": "https://19si4gvgg0.execute-api.us-east-2.amazonaws.com"
-  }
-}

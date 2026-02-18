@@ -1,4 +1,0 @@
-NAME                                     READY   STATUS    RESTARTS   AGE     IP              NODE                                          NOMINATED NODE   READINESS GATES
-sample-app-deployment-59b4c78bb9-58wx7   1/1     Running   0          5m53s   172.31.24.209   ip-172-31-21-7.us-east-2.compute.internal     <none>           <none>
-sample-app-deployment-59b4c78bb9-dh4lx   1/1     Running   0          5m53s   172.31.44.128   ip-172-31-38-208.us-east-2.compute.internal   <none>           <none>
-sample-app-deployment-59b4c78bb9-tc6tc   1/1     Running   0          5m53s   172.31.45.161   ip-172-31-38-208.us-east-2.compute.internal   <none>           <none>

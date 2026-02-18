@@ -1,7 +1,0 @@
-{
-  "registry_url": {
-    "sensitive": false,
-    "type": "string",
-    "value": "681479472828.dkr.ecr.us-east-2.amazonaws.com/sample-app"
-  }
-}
