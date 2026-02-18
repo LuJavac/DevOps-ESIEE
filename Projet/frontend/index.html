@@ -1,0 +1,131 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ProxiSport</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="background-layer" aria-hidden="true"></div>
+
+  <main class="app-shell">
+    <header class="hero">
+      <p class="kicker">ProxiSport</p>
+      <h1>Trouve instantanement le meilleur spot de sport autour de toi</h1>
+      <p>
+        ProxiSport transforme une simple adresse en recommandations actionnables: l'app geolocalise ton point
+        de depart, trie les equipements les plus proches selon ton sport, puis t'envoie en un clic sur
+        l'itineraire Google Maps ou Waze.
+      </p>
+    </header>
+
+    <section class="surface search-surface">
+      <div class="section">
+        <div class="section-head">
+          <h2>Point de depart</h2>
+          <span class="hint">Adresse, ville, code postal</span>
+        </div>
+
+        <label>
+          Adresse
+          <input id="address-line" type="text" placeholder="Ex: 18 rue de la Paix" />
+        </label>
+
+        <div class="field-grid two-cols">
+          <label>
+            Code postal
+            <input id="postal-code" type="text" inputmode="numeric" placeholder="75008" />
+          </label>
+
+          <label>
+            Ville
+            <input id="city" type="text" placeholder="Paris" />
+          </label>
+        </div>
+
+        <div class="button-row">
+          <button id="geocode-address" class="button primary" type="button">Utiliser cette adresse</button>
+          <button id="use-location" class="button soft" type="button">Utiliser ma position GPS</button>
+        </div>
+
+        <p id="selected-location" class="location-pill neutral">Aucune localisation selectionnee.</p>
+        <div id="geocode-results" class="geocode-results"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <div class="section-head">
+          <h2>Preferences</h2>
+          <span class="hint">Filtres de recherche</span>
+        </div>
+
+        <label>
+          Sport recherche
+          <input id="sport" type="text" placeholder="football, tennis, natation..." />
+        </label>
+
+        <div class="field-grid two-cols">
+          <label>
+            Rayon
+            <select id="radius">
+              <option value="5">5 km</option>
+              <option value="10" selected>10 km</option>
+              <option value="20">20 km</option>
+              <option value="50">50 km</option>
+            </select>
+          </label>
+
+          <label>
+            Mode trajet
+            <select id="travel-mode">
+              <option value="walking">A pied</option>
+              <option value="driving" selected>Voiture</option>
+              <option value="bicycling">Velo</option>
+              <option value="transit">Transport</option>
+            </select>
+          </label>
+        </div>
+
+        <details class="advanced-box">
+          <summary>Options avancees (coordonnees manuelles)</summary>
+          <div class="field-grid two-cols advanced-fields">
+            <label>
+              Latitude
+              <input id="lat" type="number" step="0.000001" placeholder="48.8566" />
+            </label>
+            <label>
+              Longitude
+              <input id="lon" type="number" step="0.000001" placeholder="2.3522" />
+            </label>
+          </div>
+        </details>
+
+        <div class="button-row">
+          <button id="search" class="button primary large" type="button">Lancer la recherche</button>
+          <button id="reset" class="button ghost" type="button">Reinitialiser</button>
+        </div>
+
+        <p id="status" class="status neutral"></p>
+      </div>
+    </section>
+
+    <section class="surface results-surface">
+      <div class="results-header">
+        <div>
+          <h2>Destinations recommandees</h2>
+          <p class="hint">Triees par proximite</p>
+        </div>
+        <span id="result-count" class="result-count">0 resultat</span>
+      </div>
+      <div id="results" class="result-list"></div>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>

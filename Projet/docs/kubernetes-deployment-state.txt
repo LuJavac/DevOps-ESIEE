@@ -1,17 +1,20 @@
-NAME                            READY   STATUS    RESTARTS   AGE
-pod/backend-56d4dfb667-9b7pl    1/1     Running   0          148m
-pod/backend-56d4dfb667-d8jkp    1/1     Running   0          148m
-pod/postgres-5c649588bf-6r6lg   1/1     Running   0          146m
+Expected Kubernetes state after deployment
+========================================
 
-NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-service/backend-service    NodePort    10.96.82.37     <none>        3000:30001/TCP   148m
-service/kubernetes         ClusterIP   10.96.0.1       <none>        443/TCP          3h25m
-service/postgres-service   ClusterIP   10.107.43.193   <none>        5432/TCP         146m
+Pods
+- backend-xxxxx                 1/1 Running
+- backend-yyyyy                 1/1 Running
+- frontend-xxxxx                1/1 Running
+- frontend-yyyyy                1/1 Running
+- postgres-xxxxx                1/1 Running
+- data-import-job-xxxxx         0/1 Completed
 
-NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/backend    2/2     2            2           148m
-deployment.apps/postgres   1/1     1            1           146m
+Services
+- backend-service               ClusterIP   3000/TCP
+- frontend-service              NodePort    80:30080/TCP
+- postgres-service              ClusterIP   5432/TCP
 
-NAME                                  DESIRED   CURRENT   READY   AGE
-replicaset.apps/backend-56d4dfb667    2         2         2       148m
-replicaset.apps/postgres-5c649588bf   1         1         1       146m
+Deployments
+- backend                       2/2 Available
+- frontend                      2/2 Available
+- postgres                      1/1 Available

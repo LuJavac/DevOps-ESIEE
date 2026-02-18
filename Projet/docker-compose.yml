@@ -1,0 +1,71 @@
+services:
+  postgres-service:
+    image: postgres:15-alpine
+    container_name: proxisport-postgres
+    environment:
+      POSTGRES_PASSWORD: devops2026
+      POSTGRES_DB: equipements
+      POSTGRES_USER: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d equipements"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  backend-service:
+    build:
+      context: ./backend
+    image: proxisport-backend:local
+    container_name: proxisport-backend
+    environment:
+      PORT: "3000"
+      NODE_ENV: production
+      DB_HOST: postgres-service
+      DB_PORT: "5432"
+      DB_NAME: equipements
+      DB_USER: postgres
+      DB_PASSWORD: devops2026
+    depends_on:
+      postgres-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:3000/health >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  frontend-service:
+    build:
+      context: ./frontend
+    image: proxisport-frontend:local
+    container_name: proxisport-frontend
+    depends_on:
+      backend-service:
+        condition: service_started
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+  data-import-job:
+    image: proxisport-backend:local
+    depends_on:
+      postgres-service:
+        condition: service_healthy
+      backend-service:
+        condition: service_started
+    environment:
+      DB_HOST: postgres-service
+      DB_PORT: "5432"
+      DB_NAME: equipements
+      DB_USER: postgres
+      DB_PASSWORD: devops2026
+      IMPORT_LIMIT: "${IMPORT_LIMIT:-1000}"
+    command: ["node", "src/scripts/import-data.js"]
+    restart: "no"
+
+volumes:
+  postgres-data:
