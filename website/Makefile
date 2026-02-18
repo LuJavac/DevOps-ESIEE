@@ -2,7 +2,7 @@ SHELL := /bin/bash
 MAKEFLAGS += --warn-undefined-variables
  
 SCRIPT := $(PWD)/setup_quartz_cloudflare.sh
-SITE_DIR := $(HOME)/devops-website/devops-quartz-site
+SITE_DIR := $(HOME)/DevOps-ESIEE/website/devops-quartz-site
  
  
 .PHONY: help site/setup site/update site/clean site/check

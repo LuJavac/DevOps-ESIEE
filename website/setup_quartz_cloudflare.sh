@@ -7,20 +7,20 @@ export REPO="${REPO:-devops-quartz-site}"
 export PROJ="${PROJ:-devops-quartz-pages}"
 export DOMAIN="${DOMAIN:-CHANGE_ME_DOMAIN}"                 # optional custom domain
 export EMAIL_DOMAIN="${EMAIL_DOMAIN:-esiee.fr,edu.esiee.fr}" # comma-separated
-export ACCESS_APP_NAME="${ACCESS_APP_NAME:-devops-website}"
+export ACCESS_APP_NAME="${ACCESS_APP_NAME:-DevOps-ESIEE/website}"
 export CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-b558d7ef5e46a365ea5f3d4d5f35dd99}"
 export CLOUDFLARE_API_TOKEN="${CLOUDFLARE_API_TOKEN:-TkCQdFBwSClJLGRROT3QBXpr2iM-uNtZPYghl6UJ}" # set or export before run
 export CF_ACCOUNT_ID="${CF_ACCOUNT_ID:-$CLOUDFLARE_ACCOUNT_ID}"
 export CF_API_TOKEN="${CF_API_TOKEN:-$CLOUDFLARE_API_TOKEN}"
  
 # ====== PATHS ======
-export SITE_DIR="$HOME/devops-website/$REPO"
-export ROOT="$HOME/devops-website"
+export SITE_DIR="$HOME/DevOps-ESIEE/website/$REPO"
+export ROOT="$HOME/DevOps-ESIEE/website"
 export DEVOPS_CONTENT_DIR="$ROOT/devops/devops-content"  # markdown/static content for devops track
 export UPM_CONTENT_DIR="$ROOT/devops/upm-content"        # markdown/static content for upm track
  
 # Optional: load Cloudflare/GitHub secrets from .env-style files (kept out of git)
-for env_file in "$HOME/.devops-website.env" "$ROOT/.env" "$ROOT/.env.cloudflare"; do
+for env_file in "$HOME/.DevOps-ESIEE/website.env" "$ROOT/.env" "$ROOT/.env.cloudflare"; do
   if [ -f "$env_file" ]; then
     set -a
     # shellcheck disable=SC1090
