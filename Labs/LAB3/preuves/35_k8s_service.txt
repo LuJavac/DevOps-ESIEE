@@ -1,0 +1,2 @@
+NAME                      TYPE           CLUSTER-IP     EXTERNAL-IP                                                               PORT(S)        AGE     SELECTOR
+sample-app-loadbalancer   LoadBalancer   10.100.49.52   ac181c1d4da5d4d6d94cbde4933a3543-1771289685.us-east-2.elb.amazonaws.com   80:31721/TCP   3h11m   app=sample-app-pods

@@ -1,0 +1,21 @@
+total 32K
+-rwxrwxrwx 1 yroul99 yroul99   26 Feb 18  2026 00_date.txt
+-rwxrwxrwx 1 yroul99 yroul99  128 Feb 18  2026 01_identity.json
+-rwxrwxrwx 1 yroul99 yroul99  892 Feb 18  2026 10_inventory_graph.txt
+-rwxrwxrwx 1 yroul99 yroul99  930 Feb 18  2026 11_ec2_table.txt
+-rwxrwxrwx 1 yroul99 yroul99  169 Feb 18  2026 12_nginx_curl.txt
+-rwxrwxrwx 1 yroul99 yroul99  130 Feb 18  2026 20_latest_ami.json
+-rwxrwxrwx 1 yroul99 yroul99  143 Feb 18  2026 21_asg_outputs.json
+-rwxrwxrwx 1 yroul99 yroul99  147 Feb 18  2026 22_alb_curl.txt
+-rwxrwxrwx 1 yroul99 yroul99 2.1K Feb 18  2026 30_eks_outputs.json
+-rwxrwxrwx 1 yroul99 yroul99 3.6K Feb 18  2026 31_eks_cluster.json
+-rwxrwxrwx 1 yroul99 yroul99 1.3K Feb 18  2026 32_eks_nodegroup.json
+-rwxrwxrwx 1 yroul99 yroul99  145 Feb 18  2026 33_ecr_outputs.json
+-rwxrwxrwx 1 yroul99 yroul99  616 Feb 18  2026 34_ecr_repos.json
+-rwxrwxrwx 1 yroul99 yroul99  335 Feb 18  2026 35_k8s_service.txt
+-rwxrwxrwx 1 yroul99 yroul99  665 Feb 18  2026 36_k8s_pods.txt
+-rwxrwxrwx 1 yroul99 yroul99  170 Feb 18  2026 37_k8s_curl.txt
+-rwxrwxrwx 1 yroul99 yroul99  144 Feb 18  2026 40_lambda_outputs.json
+-rwxrwxrwx 1 yroul99 yroul99  161 Feb 18  2026 41_lambda_api_curl.txt
+-rwxrwxrwx 1 yroul99 yroul99 2.7K Feb 18  2026 42_lambda_get_function.json
+-rwxrwxrwx 1 yroul99 yroul99    0 Feb 18  2026 99_manifest.txt

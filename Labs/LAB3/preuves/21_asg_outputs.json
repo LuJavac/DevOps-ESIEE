@@ -1,0 +1,7 @@
+{
+  "alb_dns_name": {
+    "sensitive": false,
+    "type": "string",
+    "value": "sample-app-alb-1357069232.us-east-2.elb.amazonaws.com"
+  }
+}

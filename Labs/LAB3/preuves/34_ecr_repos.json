@@ -1,0 +1,18 @@
+{
+    "repositories": [
+        {
+            "repositoryArn": "arn:aws:ecr:us-east-2:681479472828:repository/sample-app",
+            "registryId": "681479472828",
+            "repositoryName": "sample-app",
+            "repositoryUri": "681479472828.dkr.ecr.us-east-2.amazonaws.com/sample-app",
+            "createdAt": "2026-02-17T21:23:32.056000-04:00",
+            "imageTagMutability": "IMMUTABLE",
+            "imageScanningConfiguration": {
+                "scanOnPush": false
+            },
+            "encryptionConfiguration": {
+                "encryptionType": "AES256"
+            }
+        }
+    ]
+}
