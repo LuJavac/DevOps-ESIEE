@@ -156,7 +156,7 @@ rm -rf "$SITE_DIR/public" "$SITE_DIR/quartz/static/nb" "$SITE_DIR/content/devops
 mkdir -p "$SITE_DIR/content" "$SITE_DIR/quartz/static/img"
 # Copy images to quartz/static/img (Static plugin serves static/ at /static/)
 [ -d "$ROOT/static/img" ] && cp -a "$ROOT/static/img/." "$SITE_DIR/quartz/static/img/" || true
-write_index_from_readme
+#write_index_from_readme
 sync_all_content(){
   sync_content_dir "$DEVOPS_CONTENT_DIR" "devops"
   sync_content_dir "$UPM_CONTENT_DIR" "upm"
