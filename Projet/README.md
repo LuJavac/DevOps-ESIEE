@@ -136,9 +136,10 @@ Base path backend: `/`
 
 ### Endpoints principaux
 - `GET /health`
+- `GET /version`
 - `GET /location/geocode?query=...`
 - `GET /equipements`
-- `GET /equipements/nearby?lat=..&lon=..&sport=..&radius=..&limit=..`
+- `GET /equipements/nearby?lat=..&lon=..&sport=..&radius_km=..&limit=..`
 - `GET /equipements/stats`
 - `GET /equipements/:id`
 - `POST /equipements`
@@ -149,14 +150,22 @@ Base path backend: `/`
 Exemple:
 
 ```bash
-curl "http://localhost:3000/equipements/nearby?lat=48.8566&lon=2.3522&sport=football&radius=10&limit=10"
+curl "http://localhost:3000/equipements/nearby?lat=48.8566&lon=2.3522&sport=football&radius_km=5&limit=10"
 ```
 
 Le backend:
 - valide les coordonnees,
 - calcule la distance en km (Haversine SQL),
-- filtre optionnellement par sport,
+- filtre optionnellement par sport et rayon,
 - trie par distance croissante.
+- accepte aussi `radius` pour compatibilite.
+
+### Endpoint version
+Exemple:
+
+```bash
+curl "http://localhost:3000/version"
+```
 
 ### Endpoint geocode
 Exemple:
@@ -181,7 +190,9 @@ L'utilisateur peut:
 - saisir une adresse, un code postal et une ville,
 - utiliser sa geolocalisation navigateur,
 - ajuster des coordonnees manuelles en option avancee,
-- choisir sport, rayon et mode de trajet.
+- choisir sport, rayon (`radius_km`) et nombre de resultats (`limit`),
+- voir l'etat API (`OK/KO`) et la version d'app,
+- voir des messages clairs (chargement, adresse introuvable, geoloc refusee, API indisponible).
 
 ## 7) Lancement local developpeur
 

@@ -22,6 +22,19 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.get('/version', (req, res) => {
+  res.status(200).json({
+    version: process.env.APP_VERSION || '1.1'
+  });
+});
+
+app.use((req, res, next) => {
+  if (req.query.radius_km && !req.query.radius) {
+    req.query.radius = req.query.radius_km;
+  }
+  next();
+});
+
 app.use('/equipements', equipementsRoutes);
 app.use('/location', locationRoutes);
 
