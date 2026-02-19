@@ -1,34 +1,47 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+
 const equipementsRoutes = require('./routes/equipements');
+const locationRoutes = require('./routes/location');
 
 const app = express();
 
-// Middlewares
 app.use(helmet());
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
-// Routes
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
-    message: 'API Équipements Sportifs is running',
+    message: 'API Equipements Sportifs is running',
     timestamp: new Date().toISOString()
   });
 });
-app.use('/equipements', equipementsRoutes);
 
-// 404 handler
+app.get('/version', (req, res) => {
+  res.status(200).json({
+    version: process.env.APP_VERSION || '1.1'
+  });
+});
+
+app.use((req, res, next) => {
+  if (req.query.radius_km && !req.query.radius) {
+    req.query.radius = req.query.radius_km;
+  }
+  next();
+});
+
+app.use('/equipements', equipementsRoutes);
+app.use('/location', locationRoutes);
+
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
@@ -37,4 +50,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-module.exports = app;  // ← on exporte sans listen()
+module.exports = app;

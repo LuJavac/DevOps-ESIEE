@@ -1,6 +1,23 @@
-🧪 Test de l'API Kubernetes
-==============================
-Port: 8081
+﻿Backend validation snapshot
+===========================
 
-⚠️  Port 8081 déjà occupé. Choisir un autre port:
-   ./test-k8s-api-alt.sh 8081
+Date: 2026-02-18
+
+Local checks completed:
+- node --check on backend and frontend entry files: OK
+- geocode endpoint smoke test: GET /location/geocode?query=Paris%2075008&limit=2 -> 200
+- test suite: PASS (24/24)
+
+Test command used:
+- cd backend
+- DB_HOST=localhost DB_PORT=5432 DB_NAME=equipements DB_USER=postgres DB_PASSWORD=devops2026 npm test
+
+Kubernetes rollout status after redesign:
+- deployment/postgres: Ready
+- deployment/backend: Ready
+- deployment/frontend: Ready
+- data-import-job: Completed
+
+Notes:
+- frontend now supports address geocoding + GPS + optional manual coordinates.
+- backend now exposes /location/geocode and /equipements/nearby.

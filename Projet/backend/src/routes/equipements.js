@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
+
 const {
   getAllEquipements,
+  getNearbyEquipements,
   getEquipementById,
   createEquipement,
   updateEquipement,
@@ -9,9 +11,9 @@ const {
   getStats
 } = require('../controllers/equipements');
 
-// Routes CRUD
 router.get('/', getAllEquipements);
-router.get('/stats', getStats); // IMPORTANT: avant /:id pour éviter conflit
+router.get('/nearby', getNearbyEquipements);
+router.get('/stats', getStats);
 router.get('/:id', getEquipementById);
 router.post('/', createEquipement);
 router.put('/:id', updateEquipement);

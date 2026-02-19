@@ -1,5 +1,4 @@
 ---
-# Backend Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,53 +16,51 @@ spec:
         app: backend
     spec:
       containers:
-      - name: backend
-        image: equipements-api:latest
-        imagePullPolicy: Never  # Pour Minikube (image locale)
-        ports:
-        - containerPort: 3000
-        env:
-        - name: PORT
-          value: "3000"
-        - name: NODE_ENV
-          value: "production"
-        - name: DB_HOST
-          value: "postgres-service"
-        - name: DB_PORT
-          value: "5432"
-        - name: DB_NAME
-          value: "equipements"
-        - name: DB_USER
-          value: "postgres"
-        - name: DB_PASSWORD
-          value: "devops2026"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
-        # Resources limits pour éviter la surconsommation
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+        - name: backend
+          image: equipements-api:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: NODE_ENV
+              value: "production"
+            - name: DB_HOST
+              value: "postgres-service"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: "equipements"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "devops2026"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
 
 ---
-# Backend Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -71,11 +68,10 @@ metadata:
   labels:
     app: backend
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
-  - port: 3000
-    targetPort: 3000
-    nodePort: 30001  # Port accessible depuis l'extérieur
-    protocol: TCP
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
   selector:
     app: backend

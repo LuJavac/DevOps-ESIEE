@@ -1,309 +1,298 @@
-# Projet - API DevOps
+# Projet Final DevOps - ProxiSport
 
-Application CRUD déployée end-to-end : API REST, PostgreSQL, Docker, Kubernetes, CI/CD
+ProxiSport est une application qui transforme une adresse en recommandations sportives concretes: geolocalisation du point de depart, classement des equipements les plus proches selon le sport recherche, puis ouverture de l'itineraire en un clic sur Google Maps ou Waze.
 
+## 0) Demarrage evaluateur (recommande)
 
-## Présentation
+Objectif: permettre a un correcteur de cloner et lancer l'app sans `make`, sans Node local, sans Minikube.
 
-Ce projet reprend l'essentiel du cours DevOps - E4 2025-2026.
+### Prerequis minimaux
+- Docker Desktop (avec Docker Compose)
+- Connexion internet (import dataset public)
 
-Il démontre l'assemblage complet d'une stack DevOps :
+### Depuis la racine `Projet/`
 
-- **Backend** Node.js/Express exposant une API REST CRUD
-- **Données réelles** issues de [data.gouv.fr](https://equipements.sports.gouv.fr/explore/dataset/data-es/export/?location=19,46.71713,2.40576&basemap=ign.planv2) - équipements sportifs d'Île-de-France
-- **Base de données** PostgreSQL persistante
-- **Conteneurisation** Docker
-- **Orchestration** Kubernetes local (Minikube)
-- **Tests automatisés** Jest + Supertest
-- **CI/CD** GitHub Actions
+#### Option A (scripts)
+- Windows PowerShell:
 
-
----
-
-## Structure du projet
-
-```
-DevOps-ESIEE/
-├── Labs/                          # Labs du cours
-└── Projet/
-    ├── .github/workflows/
-    │   ├── test.yml               # CI : tests automatiques
-    │   └── build.yml              # CD : build & push Docker Hub
-    ├── backend/
-    │   ├── src/
-    │   │   ├── app.js             # Application Express
-    │   │   ├── controllers/
-    │   │   │   └── equipements.js # Logique CRUD + filtres
-    │   │   ├── db/
-    │   │   │   └── index.js       # Pool PostgreSQL
-    │   │   └── routes/
-    │   │       └── equipements.js # Définition des routes
-    │   ├── tests/
-    │   │   └── api.test.js        # 21 tests Jest/Supertest
-    │   ├── Dockerfile
-    │   └── package.json
-    ├── kubernetes/
-    │   ├── postgres.yaml          # Déploiement PostgreSQL
-    │   ├── deployment.yaml        # Déploiement Backend (2 replicas)
-    │   └── data-import-job.yaml   # Job d'import des données
-    ├── Makefile                   # Commandes raccourcies
-    └── README.md
+```powershell
+.\scripts\start-local.ps1
 ```
 
----
-
-## Démarrage rapide
-
-### Prérequis
-
-- [Node.js 18+](https://nodejs.org/)
-- [Docker](https://www.docker.com/)
-- [Minikube](https://minikube.sigs.k8s.io/docs/start/)
-- [kubectl](https://kubernetes.io/docs/tasks/tools/)
-
-### Développement local
+- Linux/macOS:
 
 ```bash
-# 1. Cloner
-git clone https://github.com/VOTRE-USERNAME/DevOps-ESIEE.git
-cd DevOps-ESIEE/Projet
+chmod +x ./scripts/start-local.sh ./scripts/stop-local.sh
+./scripts/start-local.sh
+```
 
-# 2. Installer les dépendances
+#### Option B (commandes directes)
+
+```bash
+docker compose up -d --build postgres-service backend-service frontend-service
+docker compose run --rm data-import-job
+```
+
+### URLs
+- Frontend: `http://localhost:8080`
+- API health: `http://localhost:8080/api/health`
+
+### Arret
+- Windows PowerShell:
+
+```powershell
+.\scripts\stop-local.ps1
+```
+
+- Linux/macOS:
+
+```bash
+./scripts/stop-local.sh
+```
+
+- Reset complet des donnees:
+  - PowerShell: `.\scripts\stop-local.ps1 -ResetData`
+  - Bash: `./scripts/stop-local.sh --reset-data`
+
+## 1) Objectif fonctionnel
+
+Le projet realise une web app avec les usages suivants :
+- Geolocaliser l'utilisateur par adresse (ville + code postal) ou GPS.
+- Filtrer par sport souhaite.
+- Retourner les destinations les plus proches (tri par distance).
+- Ouvrir directement l'itineraire dans Google Maps ou Waze.
+- Copier l'adresse d'un equipement en un clic.
+
+## 2) Stack technique
+
+- Frontend: HTML/CSS/JS (Nginx)
+- Backend: Node.js + Express
+- Data: PostgreSQL
+- Source dataset: data.gouv.fr (equipements sportifs)
+- Conteneurs: Docker
+- Orchestration: Kubernetes (Minikube ou cluster cloud)
+- CI/CD: GitHub Actions
+- Tests API: Jest + Supertest
+
+## 3) Architecture
+
+- `frontend` appelle `/api/*` sur le meme domaine.
+- Nginx du frontend proxy les requetes `/api` vers `backend-service`.
+- `backend` expose API CRUD + endpoint de proximite + endpoint geocode.
+- `postgres` stocke les equipements importes.
+- `data-import-job` initialise la base en important les donnees publiques.
+
+## 4) Structure du repo
+
+```txt
+Projet/
+|-- .github/workflows/
+|   |-- ci.yml
+|   |-- docker-publish.yml
+|   `-- cd-kubernetes.yml
+|-- backend/
+|   |-- src/
+|   |   |-- app.js
+|   |   |-- server.js
+|   |   |-- controllers/equipements.js
+|   |   |-- controllers/location.js
+|   |   |-- routes/equipements.js
+|   |   |-- routes/location.js
+|   |   |-- db/index.js
+|   |   |-- scripts/import-data.js
+|   |   `-- scripts/init-schema.js
+|   |-- tests/api.test.js
+|   |-- Dockerfile
+|   `-- package.json
+|-- frontend/
+|   |-- app.js
+|   |-- styles.css
+|   |-- index.html
+|   |-- nginx.conf
+|   `-- Dockerfile
+|-- kubernetes/
+|   |-- postgres.yaml
+|   |-- deployment.yaml
+|   |-- frontend.yaml
+|   `-- data-import-job.yaml
+|-- scripts/
+|   |-- start-local.ps1
+|   |-- stop-local.ps1
+|   |-- start-local.sh
+|   `-- stop-local.sh
+|-- docs/
+|   |-- rapport-technique.md
+|   |-- checklist-conformite.md
+|   `-- demo-video.md
+|-- docker-compose.yml
+|-- Makefile
+|-- validate-k8s.sh
+`-- test-k8s-api-alt.sh
+```
+
+## 5) API
+
+Base path backend: `/`
+
+### Endpoints principaux
+- `GET /health`
+- `GET /version`
+- `GET /location/geocode?query=...`
+- `GET /equipements`
+- `GET /equipements/nearby?lat=..&lon=..&sport=..&radius_km=..&limit=..`
+- `GET /equipements/stats`
+- `GET /equipements/:id`
+- `POST /equipements`
+- `PUT /equipements/:id`
+- `DELETE /equipements/:id`
+
+### Endpoint proximite (coeur du besoin)
+Exemple:
+
+```bash
+curl "http://localhost:3000/equipements/nearby?lat=48.8566&lon=2.3522&sport=football&radius_km=5&limit=10"
+```
+
+Le backend:
+- valide les coordonnees,
+- calcule la distance en km (Haversine SQL),
+- filtre optionnellement par sport et rayon,
+- trie par distance croissante.
+- accepte aussi `radius` pour compatibilite.
+
+### Endpoint version
+Exemple:
+
+```bash
+curl "http://localhost:3000/version"
+```
+
+### Endpoint geocode
+Exemple:
+
+```bash
+curl "http://localhost:3000/location/geocode?query=10+rue+de+Rivoli,+75001,+Paris&limit=5"
+```
+
+Le backend:
+- convertit une adresse en latitude/longitude (provider Nominatim),
+- retourne plusieurs suggestions d'adresses,
+- permet au frontend de selectionner le meilleur point de depart.
+
+## 6) Fonctionnalites frontend
+
+Pour chaque destination, l'UI propose:
+- `Y aller (Google Maps)` -> ouvre l'itineraire.
+- `Y aller (Waze)` -> ouvre la navigation Waze.
+- `Copier l'adresse` -> copie l'adresse complete dans le presse-papiers.
+
+L'utilisateur peut:
+- saisir une adresse, un code postal et une ville,
+- utiliser sa geolocalisation navigateur,
+- ajuster des coordonnees manuelles en option avancee,
+- choisir sport, rayon (`radius_km`) et nombre de resultats (`limit`),
+- voir l'etat API (`OK/KO`) et la version d'app,
+- voir des messages clairs (chargement, adresse introuvable, geoloc refusee, API indisponible).
+
+## 7) Lancement local developpeur
+
+### Prerequis
+- Node.js 20+
+- Docker
+
+### Backend local (hors Kubernetes)
+
+```bash
 make install
-
-# 3. Démarrer PostgreSQL
 make db-start
-
-# 4. Importer les données réelles
 make db-import
-
-# 5. Lancer l'API
 make dev
-# -> http://localhost:3000
 ```
 
-### Déploiement Kubernetes
+API dispo sur `http://localhost:3000`.
+
+Alternative sans `make` (PowerShell ou bash):
 
 ```bash
-# 1. Démarrer Minikube
+cd backend
+npm ci
+```
+
+Puis lancer PostgreSQL avec Docker et importer:
+
+```bash
+docker run -d --name equipements-db -e POSTGRES_PASSWORD=devops2026 -e POSTGRES_DB=equipements -p 5432:5432 postgres:15-alpine
+cd backend
+node src/scripts/import-data.js
+npm run dev
+```
+
+## 8) Deploiement Kubernetes
+
+### Prerequis
+- kubectl
+- Minikube
+
+```bash
 minikube start --driver=docker
-
-# 2. Builder l'image dans le contexte Minikube
 make k8s-build
-
-# 3. Déployer (PostgreSQL + Backend + Job d'import)
 make k8s-deploy
-kubectl apply -f kubernetes/data-import-job.yaml
-
-# 4. Vérifier
-make k8s-status
-# NAME                        READY   STATUS      
-# backend-xxx                 1/1     Running     
-# backend-yyy                 1/1     Running     
-# postgres-zzz                1/1     Running     
-
-# 5. Accéder à l'API (WSL2)
-kubectl port-forward service/backend-service 8081:3000
-# -> http://localhost:8081
+make k8s-import
+make k8s-validate
+make k8s-url
 ```
 
----
+URL frontend via `make k8s-url`.
 
-## API Reference
-
-Base URL : `http://localhost:3000`
-
-### Endpoints
-
-| Méthode | Route | Description |
-|---------|-------|-------------|
-| `GET` | `/health` | Statut de l'API |
-| `GET` | `/equipements` | Liste paginée |
-| `GET` | `/equipements/stats` | Statistiques globales |
-| `GET` | `/equipements/:id` | Détail d'un équipement |
-| `POST` | `/equipements` | Créer un équipement |
-| `PUT` | `/equipements/:id` | Modifier un équipement |
-| `DELETE` | `/equipements/:id` | Supprimer un équipement |
-
-### Paramètres de filtrage
-
-| Paramètre | Exemple | Description |
-|-----------|---------|-------------|
-| `page` | `?page=2` | Numéro de page |
-| `limit` | `?limit=20` | Résultats par page (max 100) |
-| `commune` | `?commune=Paris` | Filtrer par commune |
-| `type` | `?type=piscine` | Filtrer par type d'équipement |
-| `accessible` | `?accessible=true` | Équipements PMR uniquement |
-| `search` | `?search=stade` | Recherche dans nom/installation |
-
-### Exemples
+## 9) Tests
 
 ```bash
-# Health check
-curl http://localhost:3000/health
-
-# Statistiques
-curl http://localhost:3000/equipements/stats | jq
-
-# Liste paginée
-curl "http://localhost:3000/equipements?page=1&limit=10" | jq
-
-# Filtres combinés
-curl "http://localhost:3000/equipements?commune=Paris&accessible=true" | jq
-
-# Créer
-curl -X POST http://localhost:3000/equipements \
-  -H "Content-Type: application/json" \
-  -d '{"equip_numero":"NEW001","equip_nom":"Stade Demo","commune_nom":"Paris"}'
-
-# Modifier
-curl -X PUT http://localhost:3000/equipements/1 \
-  -H "Content-Type: application/json" \
-  -d '{"equip_nom":"Stade Modifié"}'
-
-# Supprimer
-curl -X DELETE http://localhost:3000/equipements/1
-```
-
-### Exemple de réponse `/equipements/stats`
-
-```json
-{
-  "success": true,
-  "stats": {
-    "total": 1001,
-    "communes": 349,
-    "accessible": 262,
-    "byType": [
-      { "equip_type_famille": "Court de tennis", "count": "124" },
-      { "equip_type_famille": "Equipement d'activités de forme et de santé", "count": "109" }
-    ],
-    "byCommune": [
-      { "commune_nom": "Paris 14e Arrondissement", "count": "29" },
-      { "commune_nom": "Paris 12e Arrondissement", "count": "29" }
-    ]
-  }
-}
-```
-
----
-
-## Tests
-
-```bash
-# Lancer les tests
 make test
-
-# Résultat attendu
-# Tests: 21 passed, 21 total
-# Coverage: ~85%
 ```
 
-Les tests couvrent l'ensemble des endpoints :
-
-- Health check
-- Pagination et paramètres
-- Tous les filtres (commune, type, PMR, recherche)
-- Endpoint statistiques
-- CRUD complet (Create / Read / Update / Delete)
-- Gestion des erreurs (404, 400, 409)
-
-Chaque test est autonome : il crée ses propres données et nettoie après exécution.
-
----
-
-## CI/CD
-
-Deux workflows GitHub Actions :
-
-### `test.yml` — déclenché sur chaque push et PR
-
-```
-push/PR → checkout → Node 18 → PostgreSQL service → npm install → npm test
-```
-
-### `build.yml` — déclenché sur push vers `main`
-
-```
-push main → checkout → Docker Buildx → login Docker Hub → build & push image
-```
-
-Les secrets nécessaires dans GitHub (`Settings → Secrets → Actions`) :
-
-| Secret | Description |
-|--------|-------------|
-| `DOCKER_USERNAME` | Votre username Docker Hub |
-| `DOCKER_TOKEN` | Access token Docker Hub |
-
----
-
-## Docker
+Alternative sans `make`:
 
 ```bash
-# Build
-make docker-build
-
-# Run (avec une DB locale)
-make docker-run
+cd backend
+npm test
 ```
 
-Image disponible sur Docker Hub : `votre-username/equipements-api:latest`
+La suite couvre:
+- health,
+- pagination/filtres,
+- endpoint proximite,
+- stats,
+- CRUD,
+- erreurs (404/400/409).
 
----
+## 10) CI/CD GitHub Actions
 
-## Makefile - commandes disponibles
+### `ci.yml`
+- push/PR -> install -> init schema DB -> tests backend.
 
-```bash
-make help         # Afficher toutes les commandes
+### `docker-publish.yml`
+- push `main`/tag -> build & push images Docker backend + frontend.
 
-# Développement
-make install      # npm install
-make dev          # Lancer en mode watch
-make test         # Lancer les tests
+### `cd-kubernetes.yml`
+- deploiement K8s (workflow_dispatch ou apres publish Docker).
+- apply manifests + mise a jour des images + rollout status.
 
-# Base de données
-make db-start     # Démarrer PostgreSQL (Docker)
-make db-stop      # Arrêter PostgreSQL
-make db-import    # Importer les données data.gouv.fr
-make db-stats     # Compter les équipements en base
+Secrets attendus:
+- `DOCKERHUB_USERNAME`
+- `DOCKERHUB_TOKEN`
+- `KUBE_CONFIG_DATA` (kubeconfig base64)
 
-# Docker
-make docker-build # Builder l'image
-make docker-run   # Lancer le container
+## 11) Couverture des consignes officielles
 
-# Kubernetes
-make k8s-build    # Builder l'image dans Minikube
-make k8s-deploy   # Déployer sur K8s
-make k8s-status   # Voir pods et services
-make k8s-logs     # Logs du backend en temps réel
-make k8s-delete   # Supprimer le déploiement
+- CI: present (tests automatiques)
+- CD: present (build/push + deploy K8s)
+- Backend: present (API REST CRUD)
+- Frontend: present (interface utilisateur complete)
+- Base de donnees: present (PostgreSQL + import dataset)
+- Kubernetes: present (frontend, backend, postgres, job)
+- Documentation technique: presente (ce README + docs)
+- Video demo: guide fourni dans `docs/demo-video.md`
 
-make clean        # Supprimer node_modules et coverage
-```
+## 12) Equipe
 
-
----
-
-## Variables d'environnement
-
-Copier `.env.example` vers `.env` :
-
-```env
-PORT=3000
-NODE_ENV=development
-
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=equipements
-DB_USER=postgres
-DB_PASSWORD=devops2026
-```
-
-⚠️Dans le cadre de ce projet, les mots de passe sont volontairement laissés en clair dans les fichiers versionnés. Cela pour simplifier la prise en main et le déploiement local pour tous les membres de l'équipe, sans gestion complexe de secrets.
-En production, utiliser des Kubernetes Secrets ou un gestionnaire de secrets.
-
----
-
-## Équipe
-
-Rémy ABDOUL MAZIDOU, Lubin BENOIT, Antoine LI, Yoan ROUL & Lucas TONLOP.
+Remy ABDOUL MAZIDOU, Lubin BENOIT, Antoine LI, Yoan ROUL, Lucas TONLOP.

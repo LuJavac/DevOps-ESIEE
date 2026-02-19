@@ -1,0 +1,161 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ProxiSport</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Sora:wght@600;700&family=Righteous&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="background-layer" aria-hidden="true"></div>
+
+  <main class="app-shell">
+    <header class="hero">
+      <div class="hero-grid">
+        <div class="hero-main">
+          <p class="kicker">PROXISPORT</p>
+          <h1>Trouve instantanément le meilleur spot de sport autour de toi</h1>
+          <p class="hero-lead">
+            ProxiSport transforme une simple adresse en recommandations concrètes: l'app géolocalise ton point
+            de départ, trie les complexes sportifs les plus proches selon ton sport, puis t'envoie en un clic sur
+            l'itinéraire Google Maps ou Waze.
+          </p>
+          <div class="hero-status">
+            <span id="api-status" class="api-pill pending">API: ...</span>
+          </div>
+        </div>
+        <aside class="hero-card" aria-label="Guide rapide">
+          <p class="hero-card-kicker">Démarre en 3 étapes</p>
+          <ol class="hero-steps">
+            <li>Choisis une adresse ou utilise la position GPS</li>
+            <li>Choisis ton sport, le rayon et le nombre de résultats</li>
+            <li>Lance la recherche</li>
+          </ol>
+        </aside>
+      </div>
+    </header>
+
+    <section class="surface search-surface">
+      <div class="section">
+        <div class="section-head">
+          <h2>Point de départ</h2>
+        </div>
+
+        <label>
+          Adresse
+          <input id="address-line" type="text" placeholder="Ex: 18 rue de la Paix" />
+        </label>
+
+        <div class="field-grid two-cols">
+          <label>
+            Code postal
+            <input id="postal-code" type="text" inputmode="numeric" placeholder="Ex: 75008" />
+          </label>
+
+          <label>
+            Ville
+            <input id="city" type="text" placeholder="Ex: Paris" />
+          </label>
+        </div>
+
+        <div class="button-row location-actions">
+          <button id="geocode-address" class="button primary" type="button">Utiliser cette adresse</button>
+          <button id="use-location" class="button soft" type="button">Utiliser ma position GPS</button>
+        </div>
+
+        <p id="selected-location" class="location-pill neutral">Aucune localisation sélectionnée.</p>
+        <div id="geocode-results" class="geocode-results"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section">
+        <div class="section-head">
+          <h2>Préférences</h2>
+        </div>
+
+        <label>
+          Sport recherché
+          <input id="sport" type="text" placeholder="Ex: football, tennis, natation..." />
+        </label>
+
+        <div class="field-grid three-cols">
+          <label>
+            Rayon
+            <select id="radius">
+              <option value="1">1 km</option>
+              <option value="2">2 km</option>
+              <option value="5" selected>5 km</option>
+              <option value="10">10 km</option>
+            </select>
+          </label>
+
+          <label>
+            Nombre de résultats
+            <select id="result-limit">
+              <option value="10">10</option>
+              <option value="25" selected>25</option>
+              <option value="50">50</option>
+            </select>
+          </label>
+
+          <label>
+            Mode trajet
+            <select id="travel-mode">
+              <option value="walking">À pied</option>
+              <option value="driving" selected>Voiture</option>
+              <option value="bicycling">Vélo</option>
+              <option value="transit">Transport</option>
+            </select>
+          </label>
+        </div>
+
+        <details class="advanced-box">
+          <summary>Options avancées (coordonnées manuelles)</summary>
+          <div class="field-grid two-cols advanced-fields">
+            <label>
+              Latitude
+              <input id="lat" type="number" step="0.000001" placeholder="Ex: 48.8566" />
+            </label>
+            <label>
+              Longitude
+              <input id="lon" type="number" step="0.000001" placeholder="Ex: 2.3522" />
+            </label>
+          </div>
+        </details>
+
+        <div class="button-row">
+          <button id="search" class="button primary large" type="button">Lancer la recherche</button>
+          <button id="reset" class="button ghost" type="button">Réinitialiser</button>
+        </div>
+
+        <p id="status" class="status neutral">Choisis une adresse ou utilise la position GPS pour commencer.</p>
+      </div>
+    </section>
+
+    <section class="surface results-surface">
+      <div class="results-header">
+        <div class="results-title-wrap">
+          <h2>Destinations recommandées</h2>
+        </div>
+        <div class="results-tools">
+          <label for="results-sort" class="sort-label">Trier par</label>
+          <select id="results-sort" class="results-sort">
+            <option value="distance_asc" selected>Distance (croissante)</option>
+            <option value="distance_desc">Distance (décroissante)</option>
+            <option value="name_asc">Nom (A-Z)</option>
+            <option value="name_desc">Nom (Z-A)</option>
+          </select>
+          <span id="result-count" class="result-count">0 résultat</span>
+        </div>
+      </div>
+      <div id="results" class="result-list"></div>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
