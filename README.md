@@ -306,4 +306,7 @@ En production, utiliser des Kubernetes Secrets ou un gestionnaire de secrets.
 
 ## Équipe
 
+
 Rémy ABDOUL MAZIDOU, Lubin BENOIT, Antoine LI, Yoan ROUL & Lucas TONLOP.
+
+E4 DSIA - ESIEE Paris
