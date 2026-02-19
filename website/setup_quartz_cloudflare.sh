@@ -16,7 +16,7 @@ export CF_API_TOKEN="${CF_API_TOKEN:-$CLOUDFLARE_API_TOKEN}"
 # ====== PATHS ======
 export SITE_DIR="$HOME/DevOps-ESIEE/website/$REPO"
 export ROOT="$HOME/DevOps-ESIEE/website"
-export DEVOPS_CONTENT_DIR="$ROOT/devops/devops-content"  # markdown/static content for devops track
+export DEVOPS_CONTENT_DIR="$HOME/DevOps-ESIEE/website/content/devops"  # markdown/static content for devops track
 export UPM_CONTENT_DIR="$ROOT/devops/upm-content"        # markdown/static content for upm track
  
 # Optional: load Cloudflare/GitHub secrets from .env-style files (kept out of git)
