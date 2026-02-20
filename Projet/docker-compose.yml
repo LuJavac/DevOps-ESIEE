@@ -63,7 +63,7 @@ services:
       DB_NAME: equipements
       DB_USER: postgres
       DB_PASSWORD: devops2026
-      IMPORT_LIMIT: "${IMPORT_LIMIT:-1000}"
+      IMPORT_LIMIT: "${IMPORT_LIMIT:-100000}"
     command: ["node", "src/scripts/import-data.js"]
     restart: "no"
 
