@@ -1,0 +1,2 @@
+# Prevent Windows ADS artifacts from being committed
+*:Zone.Identifier
