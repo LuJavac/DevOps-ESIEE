@@ -291,7 +291,7 @@ Secrets attendus:
 - Base de donnees: present (PostgreSQL + import dataset)
 - Kubernetes: present (frontend, backend, postgres, job)
 - Documentation technique: presente (ce README + docs)
-- Video demo: guide fourni dans `docs/demo-video.md`
+  
 
 ## 12) Equipe
 
