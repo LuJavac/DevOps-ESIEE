@@ -70,4 +70,4 @@ Le projet implemente une application "Sport Pres de Moi" avec:
 - CRUD + DB: OK
 - Frontend + backend + k8s: OK
 - Documentation: OK
-- Video: script et plan prets (voir `docs/demo-video.md`)
+  
